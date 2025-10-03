@@ -1,3 +1,5 @@
+#ifndef TOKEN_HPP
+#define TOKEN_HPP
 #include <string>
 enum class TokenType {
   STRING,
@@ -83,3 +85,5 @@ public:
     }
   }
 };
+
+#endif

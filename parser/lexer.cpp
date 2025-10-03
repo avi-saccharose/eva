@@ -73,9 +73,9 @@ void Lexer::nextToken() {
   case '"':
     return string();
   case '(':
-    return addToken(TokenType::LPAREN, '(');
+    return addToken(TokenType::LPAREN, "(");
   case ')':
-    return addToken(TokenType::RPAREN, ')');
+    return addToken(TokenType::RPAREN, ")");
   case '+':
     return addToken(TokenType::ADD, "+");
   case '-':
