@@ -4,7 +4,7 @@
 #include "opcode.hpp"
 
 #define READ_BYTE() *ip++
-#define GET_CONST() constants[READ_BYTE()]
+#define GET_CONST() co->constants[READ_BYTE()]
 
 #define BINARY_OP(op)                                                          \
   do {                                                                         \
@@ -30,10 +30,10 @@ EvaValue EvaVm::pop() {
 }
 
 EvaValue EvaVm::exec(const std::string &program) {
-  constants.push_back(ALLOC_STRING("hello world"));
-  constants.push_back(ALLOC_STRING(" hello avi"));
-  code = {OP_CONST, 0, OP_CONST, 1, OP_ADD, OP_HALT};
-  ip = &code[0];
+  auto ast = parser->parse(program);
+  co = compiler->compile(*ast[0]);
+  ip = &co->code[0];
+  sp = &stack[0];
   return eval();
 }
 

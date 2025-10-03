@@ -36,7 +36,7 @@ public:
   TokenType type;
   std::string literal;
 
-  std::string type_to_string() {
+  std::string typeString() {
     switch (type) {
     case TokenType::STRING:
       return "STRING";

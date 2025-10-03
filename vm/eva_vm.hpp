@@ -2,16 +2,22 @@
 #define EVA_VM_H
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
+#include "../compiler/compiler.hpp"
+#include "../parser/parser.hpp"
 #include "eva_value.hpp"
 
 #define STACK_LIMIT 512
 
 class EvaVm {
 public:
-  EvaVm() { sp = &stack[0]; }
+  EvaVm()
+      : parser(std::make_unique<Parser>()),
+        compiler(std::make_unique<Compiler>()) {}
+
   EvaValue exec(const std::string &program);
 
   EvaValue eval();
@@ -23,7 +29,9 @@ public:
   EvaValue *sp;
 
   std::array<EvaValue, STACK_LIMIT> stack;
-  std::vector<uint8_t> code;
   std::vector<EvaValue> constants;
+  std::unique_ptr<Parser> parser;
+  std::unique_ptr<Compiler> compiler;
+  CodeObject *co;
 };
 #endif

@@ -10,15 +10,17 @@ class Lit;
 
 class ExprVisitor {
 public:
-  virtual std::string visit(class Binary *expr) = 0;
-  virtual std::string visit(class Unary *expr) = 0;
-  virtual std::string visit(class Lit *expr) = 0;
+  virtual ~ExprVisitor() = default;
+  virtual void visit(const class Binary &expr) = 0;
+  virtual void visit(const class Unary &expr) = 0;
+  virtual void visit(const class Lit &expr) = 0;
 };
 
 class Expr {
 public:
   virtual ~Expr() = default;
-  virtual std::string accept(ExprVisitor *visitor) = 0;
+
+  virtual void accept(class ExprVisitor &visitor) const = 0;
 };
 
 class Binary : public Expr {
@@ -30,8 +32,8 @@ public:
   Binary(Expr *left, Expr *right, Token op)
       : left(left), right(right), op(op) {}
 
-  std::string accept(ExprVisitor *visitor) override {
-    return visitor->visit(this);
+  void accept(class ExprVisitor &visitor) const override {
+    return visitor.visit(*this);
   }
 };
 
@@ -41,9 +43,8 @@ public:
   Token op;
 
   Unary(Expr *right, Token op) : right(right), op(op) {}
-
-  std::string accept(ExprVisitor *visitor) override {
-    return visitor->visit(this);
+  void accept(class ExprVisitor &visitor) const override {
+    return visitor.visit(*this);
   }
 };
 
@@ -55,8 +56,8 @@ public:
   Lit(std::string value, TokenType type = TokenType::NUMBER)
       : value(value), type(type) {}
 
-  std::string accept(ExprVisitor *visitor) override {
-    return visitor->visit(this);
+  void accept(class ExprVisitor &visitor) const override {
+    return visitor.visit(*this);
   }
 };
 
