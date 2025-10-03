@@ -7,6 +7,7 @@
 
 enum class EvaValueType {
   NUMBER,
+  BOOLEAN,
   OBJECT,
 };
 
@@ -30,6 +31,7 @@ struct EvaValue {
   EvaValueType type;
   union {
     double number;
+    bool boolean;
     Object *object;
   };
 };
@@ -45,6 +47,9 @@ struct CodeObject : Object {
 #define NUMBER(value)                                                          \
   ((EvaValue)(EvaValue{EvaValueType::NUMBER, {.number = value}}))
 
+#define BOOLEAN(value)                                                         \
+  ((EvaValue)(EvaValue{EvaValueType::BOOLEAN, {.boolean = value}}))
+
 #define ALLOC_STRING(value)                                                    \
   ((EvaValue){EvaValueType::OBJECT,                                            \
               {.object = (Object *)new StringObject(value)}})
@@ -55,6 +60,7 @@ struct CodeObject : Object {
 
 // Checkers
 #define IS_NUMBER(evaValue) ((evaValue).type == EvaValueType::NUMBER)
+#define IS_BOOLEAN(evaValue) ((evaValue).type == EvaValueType::BOOLEAN)
 #define IS_OBJECT(evaValue) ((evaValue).type == EvaValueType::OBJECT)
 
 #define IS_OBJECT_TYPE(evaValue, ObjectType)                                   \
@@ -65,6 +71,7 @@ struct CodeObject : Object {
 
 // Accessors
 #define AS_NUMBER(evaValue) ((double)(evaValue).number)
+#define AS_BOOLEAN(evaValue) ((bool)(evaValue).boolean)
 #define AS_OBJECT(evaValue) ((Object *)(evaValue).object)
 
 #define AS_STRING(evaValue) ((StringObject *)(evaValue).object)

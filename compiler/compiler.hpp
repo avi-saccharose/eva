@@ -19,5 +19,6 @@ private:
   void emit(uint8_t code);
   size_t numericConstIdx(double value);
   size_t stringConstIdx(const std::string &value);
+  size_t boolConstIdx(const bool &value);
 };
 #endif
