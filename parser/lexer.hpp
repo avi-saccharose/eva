@@ -19,16 +19,16 @@ class Lexer {
   void string();
   void ident();
   TokenType getIdent(const std::string &ident);
-
-public:
   char nextChar();
-  Lexer(const std::string &source) : source(source), current(0) {}
-  std::vector<Token> tokenize();
 
   std::string source;
   size_t current;
   char previous;
   std::vector<Token> tokens;
+
+public:
+  Lexer(const std::string &source) : source(source), current(0) {}
+  std::vector<Token> tokenize();
 };
 
 #endif // !LEXER_HPP

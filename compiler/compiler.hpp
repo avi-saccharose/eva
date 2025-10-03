@@ -10,7 +10,7 @@ public:
   void visit(const Binary &expr) override;
   void visit(const Unary &expr) override;
   void visit(const Lit &expr) override;
-  void visit_expr(const Expr &expr);
+  void compile_expr(const Expr &expr);
 
   CodeObject *compile(const Expr &expr);
 

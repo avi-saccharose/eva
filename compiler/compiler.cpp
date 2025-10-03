@@ -3,11 +3,10 @@
 #include "../vm/opcode.hpp"
 #include <cstddef>
 #include <cstdlib>
-#include <iostream>
 
 CodeObject *Compiler::compile(const Expr &expr) {
   co = AS_CODE(ALLOC_CODE("main"));
-  visit_expr(expr);
+  compile_expr(expr);
   emit(OP_HALT);
   return co;
 }
@@ -43,7 +42,7 @@ size_t Compiler::boolConstIdx(const bool &value) {
 #undef ALLOC_CONST
 
 void Compiler::emit(uint8_t code) { co->code.push_back(code); }
-void Compiler::visit_expr(const Expr &expr) { expr.accept(*this); }
+void Compiler::compile_expr(const Expr &expr) { expr.accept(*this); }
 
 void Compiler::visit(const Binary &expr) {
   expr.left->accept(*this);

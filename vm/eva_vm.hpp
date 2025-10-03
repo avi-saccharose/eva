@@ -20,6 +20,7 @@ public:
 
   EvaValue exec(const std::string &program);
 
+private:
   EvaValue eval();
 
   void push(const EvaValue &value);

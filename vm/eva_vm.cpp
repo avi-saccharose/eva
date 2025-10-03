@@ -3,16 +3,6 @@
 #include "eva_value.hpp"
 #include "opcode.hpp"
 
-#define READ_BYTE() *ip++
-#define GET_CONST() co->constants[READ_BYTE()]
-
-#define BINARY_OP(op)                                                          \
-  do {                                                                         \
-    auto op1 = AS_NUMBER(pop());                                               \
-    auto op2 = AS_NUMBER(pop());                                               \
-    push(NUMBER(op2 op op1));                                                  \
-  } while (false)
-
 void EvaVm::push(const EvaValue &value) {
   if ((size_t)(sp - stack.begin()) == STACK_LIMIT) {
     DIE << "Stack overflow.\n";
@@ -38,6 +28,16 @@ EvaValue EvaVm::exec(const std::string &program) {
 }
 
 EvaValue EvaVm::eval() {
+#define READ_BYTE() *ip++
+#define GET_CONST() co->constants[READ_BYTE()]
+
+#define BINARY_OP(op)                                                          \
+  do {                                                                         \
+    auto op1 = AS_NUMBER(pop());                                               \
+    auto op2 = AS_NUMBER(pop());                                               \
+    push(NUMBER(op2 op op1));                                                  \
+  } while (false)
+
   for (;;) {
     auto opcode = READ_BYTE();
     switch (opcode) {
@@ -81,4 +81,7 @@ EvaValue EvaVm::eval() {
       DIE << "Unknown opcode " << std::hex << (int)opcode;
     }
   }
+#undef BINARY_OP
+#undef GET_CONST
+#undef READ_BYTE
 }
