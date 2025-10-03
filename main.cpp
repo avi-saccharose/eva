@@ -2,7 +2,8 @@
 #include "vm/eva_value.hpp"
 #include "vm/eva_vm.hpp"
 
-#include "parser/lexer.hpp"
+#include "parser/ast_printer.hpp"
+#include "parser/parser.hpp"
 
 #include <iostream>
 #include <string>
@@ -15,13 +16,17 @@ int main(int argc, char const *argv[]) {
 
   log(AS_CPPSTRING(result));
 
-  std::cout << "Porgram executed successfully\n";
+  std::cout << "Program executed successfully\n";
 
-  Lexer lexer = Lexer("123");
-  auto tokens = lexer.tokenize();
+  Parser parser = Parser();
+  AstPrinter printer = AstPrinter();
 
-  for (auto i : tokens) {
-    std::cout << i.type_to_string() << " : " << i.literal << "\n";
+  auto exprs = parser.parse("123 + 3");
+
+  for (auto expr : exprs) {
+    std::cout << printer.print(expr) << std::endl;
+    delete expr;
   }
+
   return 0;
 }
