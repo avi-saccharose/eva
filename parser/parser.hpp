@@ -1,11 +1,10 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
+#include <cstddef>
+#include <vector>
 
 #include "../ast/expr.hpp"
 #include "token.hpp"
-
-#include <cstddef>
-#include <vector>
 
 class Parser {
   std::vector<Token> tokens;
@@ -18,7 +17,8 @@ class Parser {
   bool isEof();
   Token peek();
 
-  template <typename... Args> bool match(Args... types) {
+  template <typename... Args>
+  bool match(Args... types) {
     if ((check(types) || ...)) {
       advance();
       return true;
@@ -36,9 +36,9 @@ class Parser {
   Expr* unary();
   Expr* primary();
 
-public:
+ public:
   Parser() : current(0) {};
-  std::vector<Expr*> parse(const std::string &input);
+  std::vector<Expr*> parse(const std::string& input);
 };
 
 #endif

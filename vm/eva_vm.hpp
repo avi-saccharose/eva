@@ -13,14 +13,14 @@
 #define STACK_LIMIT 512
 
 class EvaVm {
-public:
+ public:
   EvaVm()
       : parser(std::make_unique<Parser>()),
         compiler(std::make_unique<Compiler>()) {}
 
   EvaValue exec(const std::string &program);
 
-private:
+ private:
   EvaValue eval();
 
   void push(const EvaValue &value);

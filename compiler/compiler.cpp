@@ -1,8 +1,10 @@
 #include "compiler.hpp"
-#include "../logger.hpp"
-#include "../vm/opcode.hpp"
+
 #include <cstddef>
 #include <cstdlib>
+
+#include "../logger.hpp"
+#include "../vm/opcode.hpp"
 
 CodeObject *Compiler::compile(const Expr &expr) {
   co = AS_CODE(ALLOC_CODE("main"));
@@ -11,17 +13,17 @@ CodeObject *Compiler::compile(const Expr &expr) {
   return co;
 }
 
-#define ALLOC_CONST(tester, converter, alllocator, value)                      \
-  do {                                                                         \
-    for (auto i = 0; i < co->constants.size(); i++) {                          \
-      if (!tester(co->constants[i])) {                                         \
-        continue;                                                              \
-      }                                                                        \
-      if (converter(co->constants[i]) == value) {                              \
-        return i;                                                              \
-      }                                                                        \
-    }                                                                          \
-    co->constants.push_back(alllocator(value));                                \
+#define ALLOC_CONST(tester, converter, alllocator, value) \
+  do {                                                    \
+    for (auto i = 0; i < co->constants.size(); i++) {     \
+      if (!tester(co->constants[i])) {                    \
+        continue;                                         \
+      }                                                   \
+      if (converter(co->constants[i]) == value) {         \
+        return i;                                         \
+      }                                                   \
+    }                                                     \
+    co->constants.push_back(alllocator(value));           \
   } while (false)
 
 size_t Compiler::numericConstIdx(double value) {
@@ -49,15 +51,15 @@ void Compiler::visit(const Binary &expr) {
   expr.right->accept(*this);
 
   switch (expr.op.type) {
-  case TokenType::ADD:
-    emit(OP_ADD);
-    break;
-  case TokenType::SUB:
-    emit(OP_SUB);
-    break;
-  default:
-    DIE << "todo binary " << expr.op.literal << "\n";
-    exit(EXIT_SUCCESS);
+    case TokenType::ADD:
+      emit(OP_ADD);
+      break;
+    case TokenType::SUB:
+      emit(OP_SUB);
+      break;
+    default:
+      DIE << "todo binary " << expr.op.literal << "\n";
+      exit(EXIT_SUCCESS);
   }
 }
 
@@ -65,26 +67,26 @@ void Compiler::visit(const Unary &expr) {}
 
 void Compiler::visit(const Lit &expr) {
   switch (expr.type) {
-  case TokenType::NUMBER: {
-    emit(OP_CONST);
-    auto value = std::stod(expr.value);
-    emit(numericConstIdx(value));
-    break;
-  }
-  case TokenType::STRING:
-    emit(OP_CONST);
-    emit(stringConstIdx(expr.value));
-    break;
-  case TokenType::TRUE:
-    emit(OP_CONST);
-    emit(boolConstIdx(true));
-    break;
-  case TokenType::FALSE:
-    emit(OP_CONST);
-    emit(boolConstIdx(false));
-    break;
-  default:
-    DIE << "TODO: " << expr.value << "\n";
-    exit(EXIT_FAILURE);
+    case TokenType::NUMBER: {
+      emit(OP_CONST);
+      auto value = std::stod(expr.value);
+      emit(numericConstIdx(value));
+      break;
+    }
+    case TokenType::STRING:
+      emit(OP_CONST);
+      emit(stringConstIdx(expr.value));
+      break;
+    case TokenType::TRUE:
+      emit(OP_CONST);
+      emit(boolConstIdx(true));
+      break;
+    case TokenType::FALSE:
+      emit(OP_CONST);
+      emit(boolConstIdx(false));
+      break;
+    default:
+      DIE << "TODO: " << expr.value << "\n";
+      exit(EXIT_FAILURE);
   }
 }

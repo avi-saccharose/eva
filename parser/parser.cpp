@@ -1,10 +1,12 @@
 #include "parser.hpp"
-#include "../logger.hpp"
-#include "lexer.hpp"
-#include "token.hpp"
+
 #include <cstdlib>
 #include <string>
 #include <vector>
+
+#include "../logger.hpp"
+#include "lexer.hpp"
+#include "token.hpp"
 
 std::vector<Expr *> Parser::parse(const std::string &input) {
   auto lexer = Lexer(input);

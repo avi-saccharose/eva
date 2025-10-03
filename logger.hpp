@@ -6,7 +6,7 @@
 #include <sstream>
 
 class ErrorLogMessage : public std::basic_ostringstream<char> {
-public:
+ public:
   ~ErrorLogMessage() {
     fprintf(stderr, "fatal error: %s\n", str().c_str());
     exit(EXIT_FAILURE);

@@ -1,7 +1,9 @@
 #ifndef EXPR_H
 #define EXPR_H
-#include "../parser/token.hpp"
+
 #include <string>
+
+#include "../parser/token.hpp"
 
 // Forward declarations
 class Binary;
@@ -9,7 +11,7 @@ class Unary;
 class Lit;
 
 class ExprVisitor {
-public:
+ public:
   virtual ~ExprVisitor() = default;
   virtual void visit(const class Binary &expr) = 0;
   virtual void visit(const class Unary &expr) = 0;
@@ -17,14 +19,14 @@ public:
 };
 
 class Expr {
-public:
+ public:
   virtual ~Expr() = default;
 
   virtual void accept(class ExprVisitor &visitor) const = 0;
 };
 
 class Binary : public Expr {
-public:
+ public:
   Expr *left;
   Expr *right;
   Token op;
@@ -38,7 +40,7 @@ public:
 };
 
 class Unary : public Expr {
-public:
+ public:
   Expr *right;
   Token op;
 
@@ -49,7 +51,7 @@ public:
 };
 
 class Lit : public Expr {
-public:
+ public:
   std::string value;
   TokenType type;
 

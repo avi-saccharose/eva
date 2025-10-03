@@ -31,57 +31,57 @@ enum class TokenType {
 };
 
 class Token {
-public:
+ public:
   Token(TokenType type, std::string literal) : type(type), literal(literal) {}
   TokenType type;
   std::string literal;
 
   std::string typeString() {
     switch (type) {
-    case TokenType::STRING:
-      return "STRING";
-    case TokenType::NUMBER:
-      return "NUMBER";
-    case TokenType::LPAREN:
-      return "LPAREN";
-    case TokenType::RPAREN:
-      return "RPAREN";
-    case TokenType::ADD:
-      return "ADD";
-    case TokenType::SUB:
-      return "SUB";
-    case TokenType::MUL:
-      return "MUL";
-    case TokenType::DIV:
-      return "DIV";
-    case TokenType::LT:
-      return "LT";
-    case TokenType::LTEQ:
-      return "LTEQ";
-    case TokenType::GT:
-      return "GT";
-    case TokenType::GTEQ:
-      return "GTEQ";
-    case TokenType::EQ:
-      return "EQ";
-    case TokenType::EQEQ:
-      return "EQEQ";
-    case TokenType::BANG:
-      return "BANG";
-    case TokenType::NTEQ:
-      return "NTEQ";
-    case TokenType::DEF:
-      return "DEF";
-    case TokenType::VAR:
-      return "VAR";
-    case TokenType::TRUE:
-      return "TRUE";
-    case TokenType::FALSE:
-      return "FALSE";
-    case TokenType::IDENT:
-      return "IDENT";
-    case TokenType::eof:
-      return "EOF";
+      case TokenType::STRING:
+        return "STRING";
+      case TokenType::NUMBER:
+        return "NUMBER";
+      case TokenType::LPAREN:
+        return "LPAREN";
+      case TokenType::RPAREN:
+        return "RPAREN";
+      case TokenType::ADD:
+        return "ADD";
+      case TokenType::SUB:
+        return "SUB";
+      case TokenType::MUL:
+        return "MUL";
+      case TokenType::DIV:
+        return "DIV";
+      case TokenType::LT:
+        return "LT";
+      case TokenType::LTEQ:
+        return "LTEQ";
+      case TokenType::GT:
+        return "GT";
+      case TokenType::GTEQ:
+        return "GTEQ";
+      case TokenType::EQ:
+        return "EQ";
+      case TokenType::EQEQ:
+        return "EQEQ";
+      case TokenType::BANG:
+        return "BANG";
+      case TokenType::NTEQ:
+        return "NTEQ";
+      case TokenType::DEF:
+        return "DEF";
+      case TokenType::VAR:
+        return "VAR";
+      case TokenType::TRUE:
+        return "TRUE";
+      case TokenType::FALSE:
+        return "FALSE";
+      case TokenType::IDENT:
+        return "IDENT";
+      case TokenType::eof:
+        return "EOF";
     }
   }
 };

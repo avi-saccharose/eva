@@ -1,9 +1,10 @@
 #ifndef LEXER_HPP
 #define LEXER_HPP
 
-#include "token.hpp"
 #include <cstddef>
 #include <vector>
+
+#include "token.hpp"
 
 class Lexer {
   bool isEof();
@@ -19,6 +20,7 @@ class Lexer {
   void string();
   void ident();
   TokenType getIdent(const std::string &ident);
+
   char nextChar();
 
   std::string source;
@@ -26,9 +28,9 @@ class Lexer {
   char previous;
   std::vector<Token> tokens;
 
-public:
+ public:
   Lexer(const std::string &source) : source(source), current(0) {}
   std::vector<Token> tokenize();
 };
 
-#endif // !LEXER_HPP
+#endif  // !LEXER_HPP

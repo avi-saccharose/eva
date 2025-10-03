@@ -44,18 +44,18 @@ struct CodeObject : Object {
 };
 
 // Constructors
-#define NUMBER(value)                                                          \
+#define NUMBER(value) \
   ((EvaValue)(EvaValue{EvaValueType::NUMBER, {.number = value}}))
 
-#define BOOLEAN(value)                                                         \
+#define BOOLEAN(value) \
   ((EvaValue)(EvaValue{EvaValueType::BOOLEAN, {.boolean = value}}))
 
-#define ALLOC_STRING(value)                                                    \
-  ((EvaValue){EvaValueType::OBJECT,                                            \
+#define ALLOC_STRING(value)         \
+  ((EvaValue){EvaValueType::OBJECT, \
               {.object = (Object *)new StringObject(value)}})
 
-#define ALLOC_CODE(value)                                                      \
-  ((EvaValue){EvaValueType::OBJECT,                                            \
+#define ALLOC_CODE(value)           \
+  ((EvaValue){EvaValueType::OBJECT, \
               {.object = (Object *)new CodeObject(value)}})
 
 // Checkers
@@ -63,7 +63,7 @@ struct CodeObject : Object {
 #define IS_BOOLEAN(evaValue) ((evaValue).type == EvaValueType::BOOLEAN)
 #define IS_OBJECT(evaValue) ((evaValue).type == EvaValueType::OBJECT)
 
-#define IS_OBJECT_TYPE(evaValue, ObjectType)                                   \
+#define IS_OBJECT_TYPE(evaValue, ObjectType) \
   (IS_OBJECT(evaValue) && AS_OBJECT(evaValue)->type == ObjectType)
 
 #define IS_STRING(evaValue) (IS_OBJECT_TYPE(evaValue, ObjectType::STRING))
@@ -79,4 +79,4 @@ struct CodeObject : Object {
 
 #define AS_CODE(evaValue) ((CodeObject *)(evaValue).object)
 
-#endif // !EVA_VALUE
+#endif  // !EVA_VALUE

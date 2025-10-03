@@ -1,8 +1,10 @@
 #include "lexer.hpp"
-#include "../logger.hpp"
+
 #include <cstddef>
 #include <cstdlib>
 #include <map>
+
+#include "../logger.hpp"
 
 bool Lexer::isEof() {
   if (current >= source.length()) {
@@ -65,40 +67,40 @@ void Lexer::nextToken() {
   }
 
   switch (c) {
-  case ' ':
-  case '\t':
-  case '\r':
-  case '\n':
-    break;
-  case '"':
-    return string();
-  case '(':
-    return addToken(TokenType::LPAREN, "(");
-  case ')':
-    return addToken(TokenType::RPAREN, ")");
-  case '+':
-    return addToken(TokenType::ADD, "+");
-  case '-':
-    return addToken(TokenType::SUB, "-");
-  case '/':
-    return addToken(TokenType::DIV, "/");
-  case '*':
-    return addToken(TokenType::MUL, "*");
-  case '<':
-    return match('=') ? addToken(TokenType::LTEQ, "<=")
-                      : addToken(TokenType::LT, "<");
-  case '>':
-    return match('=') ? addToken(TokenType::GTEQ, ">=")
-                      : addToken(TokenType::GT, ">");
-  case '!':
-    return match('=') ? addToken(TokenType::NTEQ, "!=")
-                      : addToken(TokenType::BANG, "!");
-  case '=':
-    return match('=') ? addToken(TokenType::EQEQ, "==")
-                      : addToken(TokenType::EQ, "=");
-  default:
-    DIE << "Unexpected token " << c << "\n";
-    exit(EXIT_FAILURE);
+    case ' ':
+    case '\t':
+    case '\r':
+    case '\n':
+      break;
+    case '"':
+      return string();
+    case '(':
+      return addToken(TokenType::LPAREN, "(");
+    case ')':
+      return addToken(TokenType::RPAREN, ")");
+    case '+':
+      return addToken(TokenType::ADD, "+");
+    case '-':
+      return addToken(TokenType::SUB, "-");
+    case '/':
+      return addToken(TokenType::DIV, "/");
+    case '*':
+      return addToken(TokenType::MUL, "*");
+    case '<':
+      return match('=') ? addToken(TokenType::LTEQ, "<=")
+                        : addToken(TokenType::LT, "<");
+    case '>':
+      return match('=') ? addToken(TokenType::GTEQ, ">=")
+                        : addToken(TokenType::GT, ">");
+    case '!':
+      return match('=') ? addToken(TokenType::NTEQ, "!=")
+                        : addToken(TokenType::BANG, "!");
+    case '=':
+      return match('=') ? addToken(TokenType::EQEQ, "==")
+                        : addToken(TokenType::EQ, "=");
+    default:
+      DIE << "Unexpected token " << c << "\n";
+      exit(EXIT_FAILURE);
   }
 }
 
