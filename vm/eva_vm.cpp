@@ -1,6 +1,6 @@
 #include "eva_vm.hpp"
+#include "../logger.hpp"
 #include "eva_value.hpp"
-#include "logger.hpp"
 #include "opcode.hpp"
 
 #define READ_BYTE() *ip++
@@ -49,6 +49,7 @@ EvaValue EvaVm::eval() {
     case OP_ADD: {
       auto op1 = pop();
       auto op2 = pop();
+
       // Numbers
       if (IS_NUMBER(op1) && IS_NUMBER(op2)) {
         auto a = AS_NUMBER(op1);
