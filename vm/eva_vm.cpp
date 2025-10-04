@@ -28,18 +28,18 @@ EvaValue EvaVm::eval() {
 
 #define COMPARE_VALUES(op, a, b) \
   do {                           \
-    bool res;
+    bool res;                    \
     switch (op) {                \
-      case OP_EQUAL:
-        res = a == b;
-        break;
-      case OP_GREATER:
-        res = a > b;
-        break;
-      case OP_LESS:
-        res = a < b;
-        break;
-    }
+      case OP_EQUAL:             \
+        res = a == b;            \
+        break;                   \
+      case OP_GREATER:           \
+        res = a > b;             \
+        break;                   \
+      case OP_LESS:              \
+        res = a < b;             \
+        break;                   \
+    }                            \
     push(BOOLEAN(res));          \
   } while (false)
 
