@@ -2,6 +2,7 @@
 #include "eva_vm.hpp"
 
 #include "../logger.hpp"
+#include "eva_value.hpp"
 #include "opcode.hpp"
 
 void EvaVm::push(const EvaValue &value) {
@@ -32,11 +33,29 @@ EvaValue EvaVm::eval() {
 #define READ_BYTE() *ip++
 #define GET_CONST() co->constants[READ_BYTE()]
 
+#define OPERANDS_EQUAL(checker, op1, op2) (checker(op1) && checker(op2))
 #define BINARY_OP(op)            \
   do {                           \
     auto op1 = AS_NUMBER(pop()); \
     auto op2 = AS_NUMBER(pop()); \
     push(NUMBER(op2 op op1));    \
+  } while (false)
+
+#define COMPARE_VALUES(op, a, b) \
+  do {                           \
+    bool res;                    \
+    switch (op) {                \
+      case OP_EQUAL:             \
+        res = a == b;            \
+        break;                   \
+      case OP_GREATER:           \
+        res = a > b;             \
+        break;                   \
+      case OP_LESS:              \
+        res = a < b;             \
+        break;                   \
+    }                            \
+    push(BOOLEAN(res));          \
   } while (false)
 
   for (;;) {
@@ -78,10 +97,35 @@ EvaValue EvaVm::eval() {
         BINARY_OP(*);
         break;
       }
+      case OP_EQUAL:
+      case OP_LESS:
+      case OP_GREATER: {
+        auto op2 = pop();
+        auto op1 = pop();
+        if (OPERANDS_EQUAL(IS_NUMBER, op1, op2)) {
+          auto a = AS_NUMBER(op1);
+          auto b = AS_NUMBER(op2);
+          COMPARE_VALUES(opcode, a, b);
+        }
+        if (OPERANDS_EQUAL(IS_STRING, op1, op2)) {
+          auto a = AS_STRING(op1);
+          auto b = AS_STRING(op2);
+          COMPARE_VALUES(opcode, a, b);
+        }
+        break;
+      }
+      // TODO: handle non booleans
+      case OP_NOT: {
+        auto value = AS_BOOLEAN(pop());
+        push(BOOLEAN(!value));
+        break;
+      }
+
       default:
         DIE << "Unknown opcode " << std::hex << (int)opcode;
     }
   }
+#undef COMPARE_VALUES
 #undef BINARY_OP
 #undef GET_CONST
 #undef READ_BYTE

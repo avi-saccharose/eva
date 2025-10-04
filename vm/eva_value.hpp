@@ -2,11 +2,8 @@
 #define EVA_VALUE_H
 
 #include <cstdint>
-#include <sstream>
 #include <string>
 #include <vector>
-
-#include "../logger.hpp"
 
 enum class EvaValueType {
   NUMBER,

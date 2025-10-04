@@ -1,5 +1,9 @@
 #include "eva_value.hpp"
 
+#include <sstream>
+
+#include "../logger.hpp"
+
 // Output stream
 std::string evaValueToTypeString(const EvaValue &value) {
   if (IS_NUMBER(value)) {
@@ -21,7 +25,7 @@ std::string evaValueToConstantString(const EvaValue &value) {
   if (IS_NUMBER(value)) {
     ss << value.number;
   } else if (IS_BOOLEAN(value)) {
-    ss << value.boolean;
+    ss << (value.boolean ? "true" : "false");
   } else if (IS_STRING(value)) {
     ss << '"' << AS_CPPSTRING(value) << '"';
   } else if (IS_CODE(value)) {

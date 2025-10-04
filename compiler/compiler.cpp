@@ -63,6 +63,27 @@ void Compiler::visit(const Binary &expr) {
     case TokenType::DIV:
       emit(OP_DIV);
       break;
+    case TokenType::EQEQ:
+      emit(OP_EQUAL);
+      break;
+    case TokenType::NTEQ:
+      emit(OP_EQUAL);
+      emit(OP_NOT);
+      break;
+    case TokenType::LT:
+      emit(OP_LESS);
+      break;
+    case TokenType::LTEQ:
+      emit(OP_GREATER);
+      emit(OP_NOT);
+      break;
+    case TokenType::GT:
+      emit(OP_GREATER);
+      break;
+    case TokenType::GTEQ:
+      emit(OP_LESS);
+      emit(OP_NOT);
+      break;
     default:
       DIE << "todo binary op " << expr.op.literal << "\n";
       exit(EXIT_SUCCESS);

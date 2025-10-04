@@ -74,24 +74,22 @@ Expr *Parser::unary() {
 }
 
 Expr *Parser::primary() {
-  if (match(TokenType::NUMBER)) {
-    auto lit = previous().literal;
-    return new Lit(lit);
-  }
-  if (match(TokenType::IDENT)) {
-    auto lit = previous().literal;
-    return new Lit(lit, TokenType::IDENT);
-  }
-
-  if (match(TokenType::STRING)) {
-    auto string = previous().literal;
-    return new Lit(string, TokenType::STRING);
-  }
-
   if (match(TokenType::LPAREN)) {
     auto expr = expression();
     consume(TokenType::RPAREN, "Expected ')' after expression");
     return expr;
+  }
+
+  if (match(TokenType::NUMBER)) {
+    auto lit = previous().literal;
+    return new Lit(lit);
+  }
+
+  if (match(TokenType::IDENT, TokenType::STRING, TokenType::TRUE,
+            TokenType::FALSE)) {
+    auto type = previous().type;
+    auto lit = previous().literal;
+    return new Lit(lit, type);
   }
 
   DIE << "Unexpected character " << previous().literal << "\n";
