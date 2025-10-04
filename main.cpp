@@ -10,10 +10,10 @@
 int main(int argc, char const *argv[]) {
   EvaVm vm;
   auto result = vm.exec(R"(
-                      3 + 4
+                  (  1 + 3 * 4 )
   )");
 
-  log(AS_NUMBER(result));
+  log(result);
 
   std::cout << "Program executed successfully\n";
 

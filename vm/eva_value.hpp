@@ -1,9 +1,12 @@
-#ifndef EVA_VALUE
-#define EVA_VALUE
+#ifndef EVA_VALUE_H
+#define EVA_VALUE_H
 
 #include <cstdint>
+#include <sstream>
 #include <string>
 #include <vector>
+
+#include "../logger.hpp"
 
 enum class EvaValueType {
   NUMBER,
@@ -78,5 +81,9 @@ struct CodeObject : Object {
 #define AS_CPPSTRING(evaValue) (AS_STRING(evaValue)->string)
 
 #define AS_CODE(evaValue) ((CodeObject *)(evaValue).object)
+
+std::string evaValueToTypeString(const EvaValue &value);
+std::string evaValueToConstantString(const EvaValue &value);
+std::ostream &operator<<(std::ostream &os, const EvaValue &value);
 
 #endif  // !EVA_VALUE
