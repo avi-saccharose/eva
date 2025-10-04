@@ -13,39 +13,39 @@ CodeObject *Compiler::compile(const Expr &expr) {
   return co;
 }
 
-#define ALLOC_CONST(tester, converter, alllocator, value) \
-  do {                                                    \
-    for (auto i = 0; i < co->constants.size(); i++) {     \
-      if (!tester(co->constants[i])) {                    \
-        continue;                                         \
-      }                                                   \
-      if (converter(co->constants[i]) == value) {         \
-        return i;                                         \
-      }                                                   \
-    }                                                     \
-    co->constants.push_back(alllocator(value));           \
-  } while (false)
-
-size_t Compiler::numericConstIdx(double value) {
-  ALLOC_CONST(IS_NUMBER, AS_NUMBER, NUMBER, value);
-  return co->constants.size() - 1;
-}
-
-size_t Compiler::stringConstIdx(const std::string &value) {
-  ALLOC_CONST(IS_STRING, AS_CPPSTRING, ALLOC_STRING, value);
-  return co->constants.size() - 1;
-}
-
-size_t Compiler::boolConstIdx(const bool &value) {
-  ALLOC_CONST(IS_BOOLEAN, AS_BOOLEAN, BOOLEAN, value);
-  return co->constants.size() - 1;
-}
-
-#undef ALLOC_CONST
-
-void Compiler::emit(uint8_t code) { co->code.push_back(code); }
 void Compiler::compile_expr(const Expr &expr) { expr.accept(*this); }
 
+// Compile if expressions
+void Compiler::visit(const If &expr) {
+  // Compile the condition
+  expr.cond->accept(*this);
+
+  emit(OP_JMP_IF_FALSE);
+  // store placeholder address for else branch
+  emit(0);
+  emit(0);
+  auto elseJmpAddr = getOffset() - 2;
+
+  // Compile the then branch
+  expr.then_branch->accept(*this);
+
+  emit(OP_JMP);
+  emit(0);
+  emit(0);
+
+  auto endAddr = getOffset() - 2;
+
+  auto elseBranchAddr = getOffset();
+  patchJumpAddress(elseJmpAddr, elseBranchAddr);
+
+  // Compile else branch
+  expr.else_branch->accept(*this);
+
+  auto endBranchAddr = getOffset();
+  patchJumpAddress(endAddr, endBranchAddr);
+}
+
+// Compile Binary expressions
 void Compiler::visit(const Binary &expr) {
   expr.left->accept(*this);
   expr.right->accept(*this);
@@ -90,8 +90,10 @@ void Compiler::visit(const Binary &expr) {
   }
 }
 
+// TODO: compile unary expressions
 void Compiler::visit(const Unary &expr) {}
 
+// Compile Literal expressions
 void Compiler::visit(const Lit &expr) {
   switch (expr.type) {
     case TokenType::NUMBER: {
@@ -117,3 +119,45 @@ void Compiler::visit(const Lit &expr) {
       exit(EXIT_FAILURE);
   }
 }
+
+void Compiler::emit(uint8_t code) { co->code.push_back(code); }
+
+void Compiler::writeByteAtOffset(size_t offset, uint8_t value) {
+  co->code[offset] = value;
+}
+
+void Compiler::patchJumpAddress(size_t offset, uint16_t value) {
+  writeByteAtOffset(offset, (value >> 8) & 0xff);
+  writeByteAtOffset(offset + 1, value & 0xff);
+}
+
+size_t Compiler::getOffset() { return co->code.size(); }
+
+#define ALLOC_CONST(tester, converter, alllocator, value) \
+  do {                                                    \
+    for (auto i = 0; i < co->constants.size(); i++) {     \
+      if (!tester(co->constants[i])) {                    \
+        continue;                                         \
+      }                                                   \
+      if (converter(co->constants[i]) == value) {         \
+        return i;                                         \
+      }                                                   \
+    }                                                     \
+    co->constants.push_back(alllocator(value));           \
+  } while (false)
+
+size_t Compiler::numericConstIdx(double value) {
+  ALLOC_CONST(IS_NUMBER, AS_NUMBER, NUMBER, value);
+  return co->constants.size() - 1;
+}
+
+size_t Compiler::stringConstIdx(const std::string &value) {
+  ALLOC_CONST(IS_STRING, AS_CPPSTRING, ALLOC_STRING, value);
+  return co->constants.size() - 1;
+}
+
+size_t Compiler::boolConstIdx(const bool &value) {
+  ALLOC_CONST(IS_BOOLEAN, AS_BOOLEAN, BOOLEAN, value);
+  return co->constants.size() - 1;
+}
+#undef ALLOC_CONST

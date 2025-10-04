@@ -24,6 +24,8 @@ enum class TokenType {
 
   DEF,
   VAR,
+  IF,
+  ELSE,
   TRUE,
   FALSE,
   IDENT,
@@ -74,6 +76,10 @@ class Token {
         return "DEF";
       case TokenType::VAR:
         return "VAR";
+      case TokenType::IF:
+        return "IF";
+      case TokenType::ELSE:
+        return "ELSE";
       case TokenType::TRUE:
         return "TRUE";
       case TokenType::FALSE:

@@ -16,6 +16,7 @@ class ExprVisitor {
   virtual void visit(const class Binary &expr) = 0;
   virtual void visit(const class Unary &expr) = 0;
   virtual void visit(const class Lit &expr) = 0;
+  virtual void visit(const class If &expr) = 0;
 };
 
 class Expr {
@@ -23,6 +24,20 @@ class Expr {
   virtual ~Expr() = default;
 
   virtual void accept(class ExprVisitor &visitor) const = 0;
+};
+
+class If : public Expr {
+ public:
+  Expr *cond;
+  Expr *then_branch;
+  Expr *else_branch;
+
+  If(Expr *cond, Expr *then_branch, Expr *else_branch)
+      : cond(cond), then_branch(then_branch), else_branch(else_branch) {}
+
+  void accept(class ExprVisitor &visitior) const override {
+    return visitior.visit(*this);
+  }
 };
 
 class Binary : public Expr {

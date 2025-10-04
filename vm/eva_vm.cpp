@@ -1,25 +1,8 @@
-
 #include "eva_vm.hpp"
 
 #include "../logger.hpp"
 #include "eva_value.hpp"
 #include "opcode.hpp"
-
-void EvaVm::push(const EvaValue &value) {
-  if ((size_t)(sp - stack.begin()) == STACK_LIMIT) {
-    DIE << "Stack overflow.\n";
-  }
-  *sp = value;
-  sp++;
-}
-
-EvaValue EvaVm::pop() {
-  if (sp == stack.begin()) {
-    DIE << "pop(): empty stack.\n";
-  }
-  sp--;
-  return *sp;
-}
 
 EvaValue EvaVm::exec(const std::string &program) {
   auto ast = parser->parse(program);
@@ -31,7 +14,9 @@ EvaValue EvaVm::exec(const std::string &program) {
 
 EvaValue EvaVm::eval() {
 #define READ_BYTE() *ip++
+#define READ_SHORT() (ip += 2, ((uint16_t)(ip[-2] << 8) | ip[-1]))
 #define GET_CONST() co->constants[READ_BYTE()]
+#define TO_ADDRESS(index) &co->code[index]
 
 #define OPERANDS_EQUAL(checker, op1, op2) (checker(op1) && checker(op2))
 #define BINARY_OP(op)            \
@@ -43,18 +28,18 @@ EvaValue EvaVm::eval() {
 
 #define COMPARE_VALUES(op, a, b) \
   do {                           \
-    bool res;                    \
+    bool res;
     switch (op) {                \
-      case OP_EQUAL:             \
-        res = a == b;            \
-        break;                   \
-      case OP_GREATER:           \
-        res = a > b;             \
-        break;                   \
-      case OP_LESS:              \
-        res = a < b;             \
-        break;                   \
-    }                            \
+      case OP_EQUAL:
+        res = a == b;
+        break;
+      case OP_GREATER:
+        res = a > b;
+        break;
+      case OP_LESS:
+        res = a < b;
+        break;
+    }
     push(BOOLEAN(res));          \
   } while (false)
 
@@ -121,12 +106,46 @@ EvaValue EvaVm::eval() {
         break;
       }
 
+      case OP_JMP_IF_FALSE: {
+        auto cond = AS_BOOLEAN(pop());
+        auto address = READ_SHORT();
+
+        if (!cond) {
+          ip = TO_ADDRESS(address);
+        }
+        break;
+      }
+
+      case OP_JMP: {
+        auto address = READ_SHORT();
+        ip = TO_ADDRESS(address);
+        break;
+      }
+
       default:
         DIE << "Unknown opcode " << std::hex << (int)opcode;
     }
   }
+#undef TO_ADDRESS
 #undef COMPARE_VALUES
 #undef BINARY_OP
 #undef GET_CONST
+#undef READ_SHORT
 #undef READ_BYTE
+}
+
+void EvaVm::push(const EvaValue &value) {
+  if ((size_t)(sp - stack.begin()) == STACK_LIMIT) {
+    DIE << "Stack overflow.\n";
+  }
+  *sp = value;
+  sp++;
+}
+
+EvaValue EvaVm::pop() {
+  if (sp == stack.begin()) {
+    DIE << "pop(): empty stack.\n";
+  }
+  sp--;
+  return *sp;
 }

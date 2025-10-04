@@ -5,6 +5,14 @@
 #include <map>
 
 #include "../logger.hpp"
+#include "token.hpp"
+
+std::vector<Token> Lexer::tokenize() {
+  while (!isEof()) {
+    nextToken();
+  }
+  return tokens;
+}
 
 bool Lexer::isEof() {
   if (current >= source.length()) {
@@ -21,6 +29,13 @@ bool Lexer::isNumeric(char c) { return (c >= '0' && c <= '9'); }
 
 bool Lexer::isAlphaNumeric(char c) { return isAlpha(c) || isNumeric(c); }
 
+char Lexer::peek(size_t index) {
+  if (isEof()) {
+    return '\0';
+  }
+  return source[current + index];
+}
+
 bool Lexer::match(char c) {
   if (isEof()) {
     return false;
@@ -32,13 +47,6 @@ bool Lexer::match(char c) {
   return true;
 }
 
-char Lexer::peek(size_t index) {
-  if (isEof()) {
-    return '\0';
-  }
-  return source[current + index];
-}
-
 char Lexer::nextChar() {
   if (isEof()) {
     return '\0';
@@ -46,13 +54,6 @@ char Lexer::nextChar() {
   previous = source[current];
   current++;
   return source[current - 1];
-}
-
-std::vector<Token> Lexer::tokenize() {
-  while (!isEof()) {
-    nextToken();
-  }
-  return tokens;
 }
 
 void Lexer::nextToken() {
@@ -74,7 +75,7 @@ void Lexer::nextToken() {
       break;
     case '"':
       return string();
-    case '(':
+    case '(': 
       return addToken(TokenType::LPAREN, "(");
     case ')':
       return addToken(TokenType::RPAREN, ")");
@@ -113,16 +114,6 @@ void Lexer::number() {
   addToken(TokenType::NUMBER, literal);
 }
 
-void Lexer::ident() {
-  std::string literal;
-  literal.push_back(previous);
-  while (!isEof() && (isAlphaNumeric(peek(0)) || peek(0) == '_')) {
-    literal.push_back(nextChar());
-  }
-  auto type = getIdent(literal);
-  addToken(type, literal);
-}
-
 void Lexer::string() {
   std::string literal;
   while (!isEof()) {
@@ -136,12 +127,21 @@ void Lexer::string() {
   exit(EXIT_FAILURE);
 }
 
+void Lexer::ident() {
+  std::string literal;
+  literal.push_back(previous);
+  while (!isEof() && (isAlphaNumeric(peek(0)) || peek(0) == '_')) {
+    literal.push_back(nextChar());
+  }
+  auto type = getIdent(literal);
+  addToken(type, literal);
+}
+
 TokenType Lexer::getIdent(const std::string &ident) {
   static std::map<std::string, TokenType> keywords = {
-      {"def", TokenType::DEF},
-      {"var", TokenType::VAR},
-      {"true", TokenType::TRUE},
-      {"false", TokenType::FALSE},
+      {"def", TokenType::DEF},   {"var", TokenType::VAR},
+      {"true", TokenType::TRUE}, {"false", TokenType::FALSE},
+      {"if", TokenType::IF},     {"else", TokenType::ELSE},
   };
   if (keywords.contains(ident)) {
     return keywords[ident];

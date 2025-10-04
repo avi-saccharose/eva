@@ -1,7 +1,7 @@
 FLAGS = -Wall -std=c++20 -ggdb3
 LD = clang++
 LD_FLAGS = -o program
-FILES = main.cpp vm/eva_vm.cpp vm/eva_value.cpp parser/lexer.cpp parser/parser.cpp compiler/compiler.cpp
+FILES = main.cpp vm/opcode.cpp vm/eva_vm.cpp vm/eva_value.cpp disassembler/disassembler.cpp parser/lexer.cpp parser/parser.cpp compiler/compiler.cpp
 
 all: compile
 

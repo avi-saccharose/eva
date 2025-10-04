@@ -7,15 +7,17 @@
 #include "token.hpp"
 
 class Parser {
-  std::vector<Token> tokens;
-  std::vector<Expr*> exprs;
-  size_t current;
+ public:
+  Parser() : current(0) {};
+  std::vector<Expr*> parse(const std::string& input);
 
+ private:
+  bool isEof();
   Token previous();
   Token advance();
-
-  bool isEof();
   Token peek();
+
+  bool check(TokenType type);
 
   template <typename... Args>
   bool match(Args... types) {
@@ -26,11 +28,11 @@ class Parser {
     return false;
   }
 
-  bool check(TokenType type);
   Token consume(TokenType type, const std::string& msg);
 
   Expr* parseExpr();
   Expr* expression();
+  Expr* expressionIf();
   Expr* equality();
   Expr* comparison();
   Expr* terminal();
@@ -38,9 +40,9 @@ class Parser {
   Expr* unary();
   Expr* primary();
 
- public:
-  Parser() : current(0) {};
-  std::vector<Expr*> parse(const std::string& input);
+  std::vector<Token> tokens;
+  std::vector<Expr*> exprs;
+  size_t current;
 };
 
 #endif

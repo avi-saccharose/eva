@@ -9,7 +9,7 @@
 int main(int argc, char const *argv[]) {
   EvaVm vm;
   auto result = vm.exec(R"(
-                  2 != 22
+                  if (true) 1 else 3 
   )");
 
   log(result);

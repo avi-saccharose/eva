@@ -19,9 +19,53 @@ std::vector<Expr *> Parser::parse(const std::string &input) {
   return exprs;
 }
 
+bool Parser::isEof() { return tokens.size() <= current; }
+
+Token Parser::previous() { return tokens.at(current - 1); }
+
+Token Parser::advance() {
+  if (!isEof()) {
+    current++;
+  }
+  return previous();
+}
+
+Token Parser::peek() { return tokens.at(current); }
+
+bool Parser::check(TokenType type) {
+  if (isEof()) {
+    return false;
+  }
+  return peek().type == type;
+}
+
+Token Parser::consume(TokenType type, const std::string &msg) {
+  if (check(type)) {
+    return advance();
+  }
+  DIE << msg << "\n";
+  exit(EXIT_FAILURE);
+}
+
 Expr *Parser::parseExpr() { return primary(); }
 
-Expr *Parser::expression() { return equality(); }
+Expr *Parser::expression() {
+  if (match(TokenType::IF)) {
+    return expressionIf();
+  }
+  return equality();
+}
+
+Expr *Parser::expressionIf() {
+  consume(TokenType::LPAREN, "Expected '(' after if");
+  auto cond = expression();
+  consume(TokenType::RPAREN, "Expected ')' after condition");
+  auto then_branch = expression();
+  consume(TokenType::ELSE, "Expected else after expression");
+  auto else_branch = expression();
+
+  return new If(cond, then_branch, else_branch);
+}
 
 Expr *Parser::equality() {
   auto expr = comparison();
@@ -91,35 +135,10 @@ Expr *Parser::primary() {
     auto lit = previous().literal;
     return new Lit(lit, type);
   }
-
-  DIE << "Unexpected character " << previous().literal << "\n";
-  exit(EXIT_FAILURE);
-}
-
-Token Parser::advance() {
-  if (!isEof()) {
-    current++;
-  }
-  return previous();
-}
-
-Token Parser::previous() { return tokens.at(current - 1); }
-
-bool Parser::check(TokenType type) {
   if (isEof()) {
-    return false;
+    DIE << "Expected literal\n";
+  } else {
+    DIE << "Unexpected character " << previous().literal << "\n";
   }
-  return peek().type == type;
-}
-
-Token Parser::consume(TokenType type, const std::string &msg) {
-  if (check(type)) {
-    return advance();
-  }
-  DIE << msg << "\n";
   exit(EXIT_FAILURE);
 }
-
-Token Parser::peek() { return tokens.at(current); }
-
-bool Parser::isEof() { return tokens.size() <= current; }
