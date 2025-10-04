@@ -27,6 +27,8 @@ class Parser {
   }
 
   bool check(TokenType type);
+  Token consume(TokenType type, const std::string& msg);
+
   Expr* parseExpr();
   Expr* expression();
   Expr* equality();

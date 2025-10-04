@@ -83,6 +83,17 @@ Expr *Parser::primary() {
     return new Lit(lit, TokenType::IDENT);
   }
 
+  if (match(TokenType::STRING)) {
+    auto string = previous().literal;
+    return new Lit(string, TokenType::STRING);
+  }
+
+  if (match(TokenType::LPAREN)) {
+    auto expr = expression();
+    consume(TokenType::RPAREN, "Expected ')' after expression");
+    return expr;
+  }
+
   DIE << "Unexpected character " << previous().literal << "\n";
   exit(EXIT_FAILURE);
 }
@@ -103,6 +114,14 @@ bool Parser::check(TokenType type) {
   return peek().type == type;
 }
 
+Token Parser::consume(TokenType type, const std::string &msg) {
+  if (check(type)) {
+    return advance();
+  }
+  DIE << msg << "\n";
+  exit(EXIT_FAILURE);
+}
+
 Token Parser::peek() { return tokens.at(current); }
 
-bool Parser::isEof() { return current >= tokens.size(); }
+bool Parser::isEof() { return tokens.size() <= current; }

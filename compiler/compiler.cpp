@@ -57,8 +57,14 @@ void Compiler::visit(const Binary &expr) {
     case TokenType::SUB:
       emit(OP_SUB);
       break;
+    case TokenType::MUL:
+      emit(OP_MUL);
+      break;
+    case TokenType::DIV:
+      emit(OP_DIV);
+      break;
     default:
-      DIE << "todo binary " << expr.op.literal << "\n";
+      DIE << "todo binary op " << expr.op.literal << "\n";
       exit(EXIT_SUCCESS);
   }
 }

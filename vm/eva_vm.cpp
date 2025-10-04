@@ -2,7 +2,6 @@
 #include "eva_vm.hpp"
 
 #include "../logger.hpp"
-#include "eva_value.hpp"
 #include "opcode.hpp"
 
 void EvaVm::push(const EvaValue &value) {
