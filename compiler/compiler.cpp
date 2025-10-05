@@ -120,6 +120,8 @@ void Compiler::visit(const Lit &expr) {
   }
 }
 
+void Compiler::disassembleBytecode() { disassembler->disassemble(co); }
+
 void Compiler::emit(uint8_t code) { co->code.push_back(code); }
 
 void Compiler::writeByteAtOffset(size_t offset, uint8_t value) {

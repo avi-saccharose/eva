@@ -10,6 +10,7 @@
 
 class Compiler : public ExprVisitor {
  public:
+  Compiler() : disassembler(std::make_unique<Disassembler>()) {}
   CodeObject *compile(const Expr &expr);
 
   void compile_expr(const Expr &expr);
@@ -17,6 +18,8 @@ class Compiler : public ExprVisitor {
   void visit(const Binary &expr) override;
   void visit(const Unary &expr) override;
   void visit(const Lit &expr) override;
+
+  void disassembleBytecode();
 
  private:
   CodeObject *co;

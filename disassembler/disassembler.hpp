@@ -12,6 +12,8 @@ class Disassembler {
   size_t disassembleInstruction(CodeObject* co, size_t offset);
   size_t disassembleSimple(CodeObject* co, uint8_t opcode, size_t offset);
   size_t disassembleConst(CodeObject* co, uint8_t opcode, size_t offset);
+  size_t disassembleJump(CodeObject* co, uint8_t opcode, size_t offset);
+  uint16_t readWordAtOffset(CodeObject* co, size_t offset);
   void dumpBytes(CodeObject* co, size_t offset, size_t count);
   void printOpcode(uint8_t opcode);
 };

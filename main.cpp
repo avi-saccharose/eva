@@ -9,7 +9,7 @@
 int main(int argc, char const *argv[]) {
   EvaVm vm;
   auto result = vm.exec(R"(
-                  if (true) 1 else 3 
+                x
   )");
 
   log(result);

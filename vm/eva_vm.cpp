@@ -9,6 +9,7 @@ EvaValue EvaVm::exec(const std::string &program) {
   co = compiler->compile(*ast[0]);
   ip = &co->code[0];
   sp = &stack[0];
+  compiler->disassembleBytecode();
   return eval();
 }
 
